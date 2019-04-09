@@ -1,6 +1,8 @@
 
 import random
 
+p_list = [0,3,6,9,12,15,18,21]
+
 def int_to_bin(int_list):
     bin_str = ''
     for i in int_list:
@@ -23,6 +25,9 @@ def bin_to_int(bin_str):
 
 
 def gera_individuo():
+    """individuo = random.sample(range(0,8),8)
+    individuo = int_to_bin(individuo)"""
+    
     individuo = ''
     for i in range(24):
         individuo += str(random.sample([0,1],1)[0])
@@ -90,16 +95,17 @@ def sel_sobreviventes(populacao):
 
     return populacao
 
-def crossover(pai_x, pai_y):  
+"""def crossover(pai_x, pai_y):  
     filho_x = ''
     filho_y = ''
     pc = random.randrange(0,10)
-
+    print(pc)
     if pc in range(0,9):
-        ponto = random.randrange(0,23)
-        
-        filho_x = pai_x[0:ponto] + pai_y[ponto:24]
-        filho_y = pai_y[0:ponto] + pai_x[ponto:24]
+        ponto = random.sample(p_list,1)[0]
+        print(ponto)     
+
+        filho_x = crossoverX(pai_x, pai_y, ponto)
+        filho_y = crossoverX(pai_y,pai_x,ponto)
            
     else:
         print('filhos iguais aos pais')
@@ -107,6 +113,65 @@ def crossover(pai_x, pai_y):
         filho_y = pai_y
 
     return filho_x,filho_y
+
+
+def crossoverX(pai_x, pai_y, ponto):
+    filho = pai_x[0:ponto]
+    #print(filho)
+    posx = []
+    posy = []
+
+    for i in p_list[0:int(ponto/3)]:
+        posx.append(pai_x[i:i+3])
+    
+    for i in p_list:
+        posy.append(pai_y[i:i+3])
+
+    #print(posx, posy, ponto)
+
+    while ponto <= 21:
+        
+        c = pai_y[ponto:ponto+3]
+        if c not in posx:
+            posx.append(c)
+            filho += c
+            ponto += 3
+        else:
+            j = 0
+            while j < len(posy):
+                if posy[j] not in posx:
+                    posx.append(posy[j])
+                    filho += posy[j]
+                    j = len(posy)
+                    ponto += 3
+                else:
+                    j += 1
+                    if j == len(posy):
+                        filho +=c
+                        ponto += 3        
+    
+    return filho 
+"""
+
+def crossover(pai_x, pai_y):  
+    filho_x = ''
+    filho_y = ''
+    pc = random.randrange(0,10)
+    
+    if pc in range(0,9):
+        ponto = random.randrange(0,23)
+
+        filho_x = pai_x[:ponto] + pai_y[ponto:]
+        filho_y = pai_y[:ponto] + pai_x[ponto:]
+           
+    else:
+        print('filhos iguais aos pais')
+        filho_x = pai_x
+        filho_y = pai_y
+
+    return filho_x,filho_y
+
+
 
 
 def mutacao(individuo):

@@ -101,14 +101,6 @@ def seleciona_pais(populacao):
     return pai_x, pai_y
 
 
-def sel_sobreviventes(populacao):
-    if len(populacao) != 102:
-        return 'populacao menor que 102'
-    populacao.pop(populacao.index(min(populacao)))
-    populacao.pop(populacao.index(min(populacao)))
-
-    return populacao
-
 def crossover(pai_x, pai_y):  
     filho_x = []
     filho_y = []
@@ -157,7 +149,7 @@ def mutacao(individuo):
 
     pm = random.randrange(0,10)
 
-    if pm in range(0,4):
+    if pm in range(0,6):
         geneX = random.randrange(0,7)
         geneY = random.randrange(0,7)
 
@@ -174,38 +166,43 @@ def gera_solucao():
     solucao = [0,0,0,0,0,0,0,0]
     iteracao = 0
     pop = gera_populacao()
-    while iteracao < 5000:
-
+    while iteracao < 10000:
+        print(iteracao)
         for i in pop:
             if calcula_fitness(i) == 28:
                 solucao = i
-                return 'Solucao {} encontrada na populacao na iteração {}'.format(solucao, iteracao)
-        paiX, paiY = seleciona_pais(pop) 
-
-       
+                return 'Solucao {} encontrada na populacao inicial'.format(solucao)
+        
+        paiX, paiY = seleciona_pais(pop)        
         filhoX, filhoY = crossover(paiX, paiY)
 
+        #seleção de sobreviventes geracional
         pop.remove(paiX)
         pop.remove(paiY)
 
-        pop.append(filhoX)
-        pop.append(filhoY)
+        
 
         if calcula_fitness(filhoX) == 28:
             solucao = filhoX
             
             print('Solução {} encontrada após crossover na iteração {}'.format(solucao, iteracao))
-            
+            #return 'Solução {} encontrada após crossover na iteração {}'.format(solucao, iteracao)
+
         elif calcula_fitness(filhoY) == 28:
             solucao = filhoY
            
             print('Solução {} encontrada após crossover na iteração {}'.format(solucao, iteracao))
-        
+            #return 'Solução {} encontrada após crossover na iteração {}'.format(solucao, iteracao)
+
         filhoX = mutacao(filhoX)
         filhoY = mutacao(filhoY)
 
-        #print(filhoX, calcula_fitness(filhoX))
-        #print(filhoY, calcula_fitness(filhoY))
+        
+        pop.append(filhoX)
+        pop.append(filhoY)
+
+        print(filhoX, calcula_fitness(filhoX))
+        print(filhoY, calcula_fitness(filhoY))
       
         if calcula_fitness(filhoX) == 28:
             solucao = filhoY
@@ -215,8 +212,7 @@ def gera_solucao():
             solucao = filhoY
             return 'Solução {} encontrada após mutação na iteração {}'.format(solucao, iteracao)
         
-        iteracao += 1
-            
+        iteracao += 1           
 
         
 
